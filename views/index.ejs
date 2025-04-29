@@ -14,9 +14,9 @@
         type="submit"
         name="user"
         value="<%= user.id %>"
-        id="<%= user.id %>"
+        id="user-<%= user.id %>"
       />
-      <label for="<%= user.id %>" style="background-color: <%= user.color %>">
+      <label for="user-<%= user.id %>" style="background-color: <%= user.color %>">
         <%= user.name %>
       </label>
       <% }); %>
@@ -25,30 +25,20 @@
       <label for="tab">Add Family Member</label>
     </form>
 
-    <form action="/add" method="post">
+    <form id="country-form" action="/add" method="post">
       <input
         type="text"
         name="country"
+        id="country-input"
         autofocus
-        placeholder="<%= locals.error ? error :  'Enter country name'%>"
+        placeholder="<%= locals.error ? error : 'Enter country name'%>"
       />
       <button type="submit" style="background-color: <%= color %>">Add</button>
     </form>
 
-    <p id="error-message" style="color: red"></p>
-
-    <script>
-      const form = document.getElementById("country-form");
-      const input = document.getElementById("country-input");
-      const errorMessage = document.getElementById("error-message");
-
-      form.addEventListener("submit", function (e) {
-        if (!input.value.trim()) {
-          e.preventDefault(); // stop form submission
-          errorMessage.textContent = "Please enter a country name.";
-        }
-      });
-    </script>
+    <p id="error-message" style="color: red">
+      <%= locals.error ? error : '' %>
+    </p>
 
     <section class="ag-canvas">
       <svg
@@ -941,12 +931,32 @@
         />
       </svg>
     </section>
-    <h2 class="total-count">Total Countries: <%=total%></h2>
+
+    <h2 class="total-count">Total Countries: <%= total %></h2>
+    
     <script>
-      const country_codes = "<%= countries %>".split(",");
-      console.log(typeof "<%= countries %>");
+      const form = document.getElementById("country-form");
+      const input = document.getElementById("country-input");
+      const errorMessage = document.getElementById("error-message");
+
+      form.addEventListener("submit", function (e) {
+        // Clear previous error messages
+        errorMessage.textContent = "";
+
+        // Check for empty input
+        if (!input.value.trim()) {
+          e.preventDefault(); // stop form submission
+          errorMessage.textContent = "Please enter a country name.";
+        }
+      });
+
+      // Apply color to visited countries
+      const country_codes = "<%= countries %>".split(",").filter(code => code.trim());
       country_codes.forEach((code) => {
-        document.getElementById(code).style.fill = "<%= color %>";
+        const countryElement = document.getElementById(code);
+        if (countryElement) {
+          countryElement.style.fill = "<%= color %>";
+        }
       });
     </script>
   </body>

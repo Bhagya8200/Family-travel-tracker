@@ -11,12 +11,17 @@
 
 <body>
   <h1>Add a Family Member</h1>
-  <form action="/new" method="post">
+  
+  <% if (locals.error) { %>
+    <p style="color: red; text-align: center;"><%= error %></p>
+  <% } %>
+  
+  <form id="new-user-form" action="/new" method="post">
     <p>What's your name?</p>
-    <input type="text" name="name">
+    <input type="text" name="name" id="name-input" required>
 
     <p>Pick a color:</p>
-    <input type="radio" name="color" id="red" value="red" />
+    <input type="radio" name="color" id="red" value="red" required />
     <label for="red"><span class="red"></span></label>
 
     <input type="radio" name="color" id="green" value="green" />
@@ -45,9 +50,30 @@
 
     <input type="radio" name="color" id="pink" value="pink" />
     <label for="pink"><span class="pink"></span></label>
+    
     <div class="spacer"></div>
     <button type="submit">Add</button>
   </form>
+  
+  <script>
+    const form = document.getElementById("new-user-form");
+    const nameInput = document.getElementById("name-input");
+    
+    form.addEventListener("submit", function(e) {
+      if (!nameInput.value.trim()) {
+        e.preventDefault();
+        alert("Please enter your name.");
+        nameInput.focus();
+      }
+      
+      // Check if a color is selected
+      const colorSelected = document.querySelector('input[name="color"]:checked');
+      if (!colorSelected) {
+        e.preventDefault();
+        alert("Please select a color.");
+      }
+    });
+  </script>
 </body>
 
 </html>
